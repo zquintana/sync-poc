@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sync-poc-backend
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-dev
+spec:
+  rules:
+    - host: sync-poc-ws.cde.zquintana.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sync-poc-backend
+                port:
+                  number: 8000
+
+  tls:
+    - hosts:
+        - sync-poc-ws.cde.zquintana.com
+      secretName: sync-poc-backend-tls

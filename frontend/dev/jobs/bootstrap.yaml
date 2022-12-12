@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sync-poc-bootstrap
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: bootstrap
+          workingDir: /usr/src
+          command:
+            - yarn
+            - --frozen-lockfile
+          args: [ ]
+          securityContext: ~
+          image: "node:16"
+          imagePullPolicy: IfNotPresent
+          envFrom: [ ]
+          volumeMounts:
+            - mountPath: /usr/src
+              name: sandbox-code
+      volumes:
+        - name: sandbox-code
+          hostPath:
+            path: /home/zquintana/code/pgc

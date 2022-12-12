@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sync-poc-backend
+  namespace: sync-poc
+  labels:
+    app.kubernetes.io/name: sync-poc-backend
+    app.kubernetes.io/instance: sync-poc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sync-poc-backend
+      app.kubernetes.io/instance: sync-poc
+  template:
+    metadata:
+      annotations: {}
+      labels:
+        app.kubernetes.io/name: sync-poc-backend
+        app.kubernetes.io/instance: sync-poc
+    spec:
+      securityContext: ~
+      containers:
+        - name: site
+          command:
+            - npm
+            - run
+            - start
+          args: []
+          workingDir: /usr/src
+          env:
+            - name: PORT
+              value: '8000'
+            - name: HOST
+              value: '0.0.0.0'
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          securityContext: ~
+          image: "node:16"
+          imagePullPolicy: IfNotPresent
+          envFrom: []
+          volumeMounts:
+            - mountPath: /usr/src
+              name: sandbox-code
+      volumes:
+        - name: sandbox-code
+          hostPath:
+            path: /home/zquintana/Code/sync-poc/backend
